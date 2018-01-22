@@ -1,0 +1,19 @@
+{
+  "name": "dictionary-path",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pierroberto/dictionary-path.git"
+  },
+  "author": "Pier Roberto Lucisano",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pierroberto/dictionary-path/issues"
+  },
+  "homepage": "https://github.com/pierroberto/dictionary-path#readme"
+}
