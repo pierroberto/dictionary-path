@@ -19,42 +19,65 @@ const dictionary = (words, begin, end) => {
       return letter.charCodeAt(0);
     });
   });
+  return findPath(list, beginNumber, endNumber);
+};
 
+let counter = 1;
+const findPath = (list, beginNumber, endNumber) => {
   // the loop begins here
-  let counter = 0;
+  let filteredList;
   const direction = beginNumber[0] - endNumber[0];
-  if (direction > 0) {
+  console.log("DEBUGGER", list, "counter", counter, direction);
+  if (direction >= 0) {
     const sortedList = list.sort((a, b) => {
       return b[0] - a[0];
     });
-    const filteredList = sortedList.filter(numbers => {
+    filteredList = sortedList.filter(numbers => {
       return numbers[0] <= beginNumber[0];
     });
+    //console.log("CHECK", filteredList);
     for (let i = 0; i < filteredList.length - 1; i++) {
       if (filteredList[i][0] <= filteredList[i + 1][0]) {
         counter++;
+        filteredList.splice(i, 1);
       }
       filteredList[i].shift();
     }
     filteredList[filteredList.length - 1].shift();
-    console.log("sorted list DOWN", filteredList, counter);
-  } else if (direction <= 0) {
+    console.log("sorted list DOWN");
+    if (!filteredList.length) {
+      return counter;
+    } else {
+      beginNumber.shift();
+      endNumber.shift();
+      findPath(filteredList, beginNumber, endNumber);
+    }
+  } else if (direction < 0) {
     const sortedList = list.sort((a, b) => {
       return a[0] - b[0];
     });
-    const filteredList = sortedList.filter(numbers => {
+    filteredList = sortedList.filter(numbers => {
       return numbers[0] >= beginNumber[0];
     });
     for (let i = 0; i < filteredList.length - 1; i++) {
       if (filteredList[i][0] >= filteredList[i + 1][0]) {
         counter++;
+        filteredList.splice(i, 1);
       }
       filteredList[i].shift();
     }
     filteredList[filteredList.length - 1].shift();
-    console.log("sorted list UP", filteredList, counter);
+    console.log("sorted list UP");
+    if (!filteredList.length) {
+      return counter;
+    } else {
+      beginNumber.shift();
+      endNumber.shift();
+      findPath(filteredList, beginNumber, endNumber);
+    }
   }
-  return;
+
+  return counter;
 };
 
 module.exports = { dictionary };
