@@ -1,4 +1,5 @@
 const dictionary = (words, begin, end) => {
+  counter = 1;
   // I convert the begin and the end in numbers
   const beginNumber = begin.split("").map(letter => {
     return letter.charCodeAt(0);
@@ -11,7 +12,7 @@ const dictionary = (words, begin, end) => {
   // the element from which it begun
   const firstLetter = begin.charCodeAt(0);
   const index = words.indexOf(begin);
-  words.shift(index);
+  words.splice(index, 1);
 
   // I convert the array and the words in numbers
   const list = words.map(word => {
@@ -19,64 +20,83 @@ const dictionary = (words, begin, end) => {
       return letter.charCodeAt(0);
     });
   });
-  return findPath(list, beginNumber, endNumber);
+  const originalList = list;
+  originalList.push(beginNumber);
+  direction = beginNumber[0] - endNumber[0];
+  console.log(
+    "INITIAL VALUES",
+    "list",
+    list,
+    "begin",
+    beginNumber,
+    "end",
+    endNumber
+  );
+  return findPath(list, beginNumber, endNumber, originalList);
 };
 
-let counter = 1;
-const findPath = (list, beginNumber, endNumber) => {
-  // the loop begins here
-  let filteredList;
-  const direction = beginNumber[0] - endNumber[0];
-  console.log("DEBUGGER", list, "counter", counter, direction);
-  if (direction >= 0) {
-    const sortedList = list.sort((a, b) => {
-      return b[0] - a[0];
-    });
-    filteredList = sortedList.filter(numbers => {
-      return numbers[0] <= beginNumber[0];
-    });
-    //console.log("CHECK", filteredList);
-    for (let i = 0; i < filteredList.length - 1; i++) {
-      if (filteredList[i][0] <= filteredList[i + 1][0]) {
-        counter++;
-        filteredList.splice(i, 1);
+let direction = 0;
+let counter = 0;
+
+const findPath = (list, begin, end, originalList) => {
+  console.log("LIST begin", list);
+  if (!list.length) return counter;
+  let diff = 0;
+  let next = 0;
+  let sortedList = [];
+
+  for (let i = 0; i < list.length - 1; i++) {
+    if (!list.length) return counter;
+    console.log("working on LINE ", list[i], " and compared to", begin);
+    for (let j = 0; j < list[i].length - 1; j++) {
+      if (!list.length) return counter;
+      if (list[i][j] !== begin[j]) {
+        if (direction > 0) {
+          console.log("positive direction ...");
+          if (list[i][0] <= begin[0]) {
+            diff++;
+          } else {
+            list.splice(i, 1);
+            diff = -1;
+            if (!list.length) return counter;
+          }
+        } else if (direction < 0) {
+          console.log("negative direction ...");
+          if (list[i][0] >= begin[0]) {
+            diff++;
+          } else {
+            list.splice(i, 1);
+            diff = -1;
+            if (!list.length) return counter;
+          }
+        }
       }
-      filteredList[i].shift();
+      console.log("===== DEBUGGER ====");
     }
-    filteredList[filteredList.length - 1].shift();
-    console.log("sorted list DOWN");
-    if (!filteredList.length) {
-      return counter;
-    } else {
-      beginNumber.shift();
-      endNumber.shift();
-      findPath(filteredList, beginNumber, endNumber);
+
+    if (diff === 0) {
+      list.splice(i, 1);
+      if (!list.length) return counter;
     }
-  } else if (direction < 0) {
-    const sortedList = list.sort((a, b) => {
-      return a[0] - b[0];
-    });
-    filteredList = sortedList.filter(numbers => {
-      return numbers[0] >= beginNumber[0];
-    });
-    for (let i = 0; i < filteredList.length - 1; i++) {
-      if (filteredList[i][0] >= filteredList[i + 1][0]) {
-        counter++;
-        filteredList.splice(i, 1);
-      }
-      filteredList[i].shift();
+    if (diff === 1) {
+      counter++;
+      console.log("counter", counter);
+      diff = 0;
+      begin = list[i];
+      list.splice(i, 1);
+      if (!list.length) return counter;
+
+      console.log("LIST final", list);
     }
-    filteredList[filteredList.length - 1].shift();
-    console.log("sorted list UP");
-    if (!filteredList.length) {
-      return counter;
-    } else {
-      beginNumber.shift();
-      endNumber.shift();
-      findPath(filteredList, beginNumber, endNumber);
-    }
+
+    diff = 0;
+  }
+  console.log("--------------- LOOP END ----------------------");
+  if (list.length) {
+    return findPath(list, begin, end);
   }
 
+  //return list, begin, end;
   return counter;
 };
 
