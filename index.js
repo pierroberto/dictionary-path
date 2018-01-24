@@ -20,35 +20,24 @@ const dictionary = (words, begin, end) => {
       return letter.charCodeAt(0);
     });
   });
-  const originalList = list;
-  originalList.push(beginNumber);
+  list.push(beginNumber);
   direction = beginNumber[0] - endNumber[0];
-  console.log(
-    "INITIAL VALUES",
-    "list",
-    list,
-    "begin",
-    beginNumber,
-    "end",
-    endNumber
-  );
-  return findPath(list, beginNumber, endNumber, originalList);
+  return findPath(list, beginNumber, endNumber, direction);
 };
 
 let direction = 0;
-let counter = 0;
+let counter = 1;
 
-const findPath = (list, begin, end, originalList) => {
-  console.log("LIST begin", list);
+const findPath = (list, begin, end, direction) => {
   if (!list.length) return counter;
+  direction = begin[0] - end[0];
+  console.log("LIST begin", list, "dir", direction);
   let diff = 0;
-  let next = 0;
-  let sortedList = [];
 
-  for (let i = 0; i < list.length - 1; i++) {
+  for (let i = 0; i < list.length; i++) {
     if (!list.length) return counter;
-    console.log("working on LINE ", list[i], " and compared to", begin);
-    for (let j = 0; j < list[i].length - 1; j++) {
+    for (let j = 0; j < list[i].length; j++) {
+      console.log("SECOND DEBUGS", i, j);
       if (!list.length) return counter;
       if (list[i][j] !== begin[j]) {
         if (direction > 0) {
@@ -58,22 +47,23 @@ const findPath = (list, begin, end, originalList) => {
           } else {
             list.splice(i, 1);
             diff = -1;
+            i--;
             if (!list.length) return counter;
           }
         } else if (direction < 0) {
-          console.log("negative direction ...");
           if (list[i][0] >= begin[0]) {
             diff++;
           } else {
             list.splice(i, 1);
             diff = -1;
+            i--;
+            console.log("====== debugger =====");
             if (!list.length) return counter;
           }
         }
       }
-      console.log("===== DEBUGGER ====");
     }
-
+    console.log("CHECKING DIFFERENCES", diff);
     if (diff === 0) {
       list.splice(i, 1);
       if (!list.length) return counter;
@@ -93,7 +83,8 @@ const findPath = (list, begin, end, originalList) => {
   }
   console.log("--------------- LOOP END ----------------------");
   if (list.length) {
-    return findPath(list, begin, end);
+    k = 0;
+    return findPath(list, begin, end, direction);
   }
 
   //return list, begin, end;
